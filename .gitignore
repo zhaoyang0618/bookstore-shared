@@ -1,0 +1,8 @@
+# 依赖（本仓库只有 Node 脚本，通常无需安装依赖）
+node_modules/
+
+# 编辑器与系统
+.DS_Store
+.vscode/
+.idea/
+*.swp

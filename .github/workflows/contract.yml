@@ -1,0 +1,57 @@
+name: Contract
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  # 另两个仓库改动后也想验证时，可在它们那边用 workflow_dispatch 触发
+  workflow_dispatch:
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出 shared（本仓库）
+        uses: actions/checkout@v4
+        with:
+          path: shared
+
+      - name: 检出 mylibrary
+        uses: actions/checkout@v4
+        with:
+          repository: zhaoyang0618/bookstore-mylibrary
+          path: mylibrary
+
+      - name: 检出 ebook-studio
+        uses: actions/checkout@v4
+        with:
+          repository: zhaoyang0618/bookstore-ebook-studio
+          path: ebook-studio
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: 构建 mylibrary
+        working-directory: mylibrary
+        run: |
+          pnpm install
+          pnpm run build
+
+      - name: 字段级契约验证
+        working-directory: shared
+        env:
+          MYLIBRARY_ROOT: ${{ github.workspace }}/mylibrary
+          EBOOK_STUDIO_ROOT: ${{ github.workspace }}/ebook-studio
+        run: node scripts/verify-contract.mjs
+
+      - name: 语义级契约验证
+        working-directory: shared
+        env:
+          MYLIBRARY_ROOT: ${{ github.workspace }}/mylibrary
+          EBOOK_STUDIO_ROOT: ${{ github.workspace }}/ebook-studio
+        run: node scripts/cross-check.mjs

@@ -1,0 +1,20 @@
+{
+  "name": "bookstore-shared",
+  "version": "0.1.0",
+  "private": true,
+  "description": "跨仓库契约验证 — 确保 mylibrary（TS）与 ebook-studio（Dart）对同一份数据的理解一致",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhaoyang0618/bookstore-shared.git"
+  },
+  "scripts": {
+    "verify": "node scripts/verify-contract.mjs",
+    "cross-check": "node scripts/cross-check.mjs",
+    "check": "npm run verify && npm run cross-check"
+  },
+  "engines": {
+    "node": ">=22.19.0"
+  }
+}
